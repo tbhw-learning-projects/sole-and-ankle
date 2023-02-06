@@ -5,6 +5,18 @@ import { COLORS, WEIGHTS } from "../../constants";
 import { formatPrice, pluralize, isNewShoe } from "../../utils";
 import Spacer from "../Spacer";
 
+const VARIANTS = {
+  "new-release": {
+    text: "New Release",
+    styles: { "--bgColor": COLORS.primary },
+  },
+  "on-sale": {
+    text: "Sale",
+    styles: { "--bgColor": COLORS.secondary },
+  },
+  default: null,
+};
+
 const ShoeCard = ({
   slug,
   name,
@@ -31,11 +43,14 @@ const ShoeCard = ({
       ? 'new-release'
       : 'default'
 
+  const tag = VARIANTS[variant];
+
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
+          {tag && <ShoeTag style={tag?.styles}>{tag.text}</ShoeTag>}
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
@@ -44,6 +59,7 @@ const ShoeCard = ({
         </Row>
         <Row>
           <ColorInfo>{pluralize("Color", numOfColors)}</ColorInfo>
+          {salePrice && <SalePrice>{formatPrice(salePrice)}</SalePrice>}
         </Row>
       </Wrapper>
     </Link>
@@ -58,6 +74,7 @@ const Link = styled.a`
 const Wrapper = styled.article`
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const ImageWrapper = styled.div`
@@ -89,6 +106,16 @@ const ColorInfo = styled.p`
 const SalePrice = styled.span`
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
+`;
+
+const ShoeTag = styled.div`
+  background-color: var(--bgColor);
+  position: absolute;
+  right: -8px;
+  top: 8px;
+  padding: 8px 16px;
+  border-radius: 2px;
+  color: white;
 `;
 
 export default ShoeCard;
